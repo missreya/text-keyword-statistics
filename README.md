@@ -1,5 +1,5 @@
 ## Project Information
-- Input one or more text files along with a keyword file which outputs a file with text statistics and keyword counts
+- This script will take all text files along with a keyword file and generate files with text statistics and keyword counts per file
 - Refer to **ds-swe-tech-assessment-prompt.md** for all information
 
 ## Outline
@@ -8,5 +8,5 @@
 
 ## Script Overview
 - main.py will request a file directory which should contain the all of the files of text to process, as well as the keyword file
-- The next input will reques the keyword file 
-- The outputs will be generated as text files placed in the same directory with "statistics_" in front of respective text file name. 
+- The next input will request the keyword file 
+- The outputs will be generated as text files placed in the same directory with "statistics_" in front of respective text file name
