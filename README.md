@@ -12,7 +12,7 @@
 - File text is in English with words separated by spaces (i.e. not comma separated)
 - Keyword file must be in the same directory as the text files
 - This script uses two optional args: 
-    --textpath: complete file path to folder with text files 
-        Default: current working directory 
-    --keywordfile: file name of keyword text file
-        Default: keyword.txt in current working directory  
+    -t or --textpath: complete file path to folder with text files 
+        Default: current working directory (type: string)
+    -k or --keywordfile: file name of keyword text file
+        Default: keyword.txt in current working directory (type: string)
