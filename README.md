@@ -1,13 +1,12 @@
 ## Project Information
-- This script will take all text files along with a keyword file and generate a file with text statistics and keyword counts
+- This script will process all text files in a directory and a keyword file to generate a file with text statistics and keyword counts
 - Refer to **ds-swe-tech-assessment-prompt.md** for all information and requirements
 
 ## Text File Requirements:
 - All text file inputs must be .txt text files
-- File text is in English with words 
 - Text should be separated by whitespace (i.e. not comma separated values)
 - Keyword file must be placed in the same directory as your text files
-- Text files recommended to be UTF-8
+- Recommended that all text files are UTF-8
 
 ## Script Info: 
 - User must provide a file directory containing the text files they wish to process 
