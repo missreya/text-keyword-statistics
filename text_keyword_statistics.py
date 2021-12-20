@@ -41,7 +41,7 @@ def file_iterate(path, keyword_file):
 
         # Check if file is in text format
         elif file.endswith(".txt"):
-            file_path = f"{path}\{file}"
+            file_path = os.path.join(path, file)
             files_to_process.append(file_path)
 
     return files_to_process
@@ -105,7 +105,8 @@ def write_output(statistics: FileData):
     # Create result text file
     now = datetime.now()
     statistics_file_path = (
-        f"{os.getcwd()}\\statistics_{now.strftime('%Y%m%d-%H%M%S')}.txt"
+        os.path.join(os.getcwd(), "statistics.txt")
+        # os.path.join(os.getcwd(),f"statistics_{now.strftime('%Y%m%d-%H%M%S')}.txt") #use this for timestamping
     )
     with open(statistics_file_path, "w") as r:
         r.write(f"{dupes}\n{line_token_stats}\n{keywords}")
@@ -131,7 +132,7 @@ def main():
         help="Keyword file in same folder as text files. (Default = keyword.txt)",
     )
     args = parser.parse_args()
-    args.keywordfile = f"{args.textpath}\{args.keywordfile}"
+    args.keywordfile = os.path.join(args.textpath, args.keywordfile)
 
     keyword_list = init_keyword(args.keywordfile)
     files_to_process = file_iterate(args.textpath, args.keywordfile)
@@ -147,7 +148,9 @@ def main():
     # Use as many threads as possible, default: os.cpu_count()+4
     arg_list = ((file, keyword_list, file_stats) for file in files_to_process)
     with ThreadPoolExecutor() as threads:
-        threads.map(lambda process_file_args: process_text_file(*process_file_args), arg_list)
+        threads.map(
+            lambda process_file_args: process_text_file(*process_file_args), arg_list
+        )
 
     # Use below for singlethreading
     # for file in files_to_process:

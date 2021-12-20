@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  mypython:
+    build: ./
+    command: bash -c "python text_keyword_statistics.py -t /usr/src/app/textfiles -k keyword.txt && tail -F anything"
+    volumes:
+      - ./textfiles:/usr/src/app/textfiles
