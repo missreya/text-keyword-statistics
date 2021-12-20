@@ -36,7 +36,7 @@ def file_iterate(path, keyword_file):
     for file in os.listdir(path):
 
         # Skip the keyword and statistics files
-        if file.startswith("statistics_") or file == (os.path.basename(keyword_file)):
+        if file.startswith("statistics") or file == (os.path.basename(keyword_file)):
             continue
 
         # Check if file is in text format
@@ -67,7 +67,7 @@ def process_text_file(file, keyword_list, statistics: FileData):
         statistics.lines.append(len(line))
         statistics.tokens.append(len(line.split()))
 
-        # Checks for keyword in line and adds count to dictionary
+        # Checks for keyword and add count to dictionary
         for keyword in keyword_list:
             if re.search(r"\b" + str(keyword) + r"\b", line):
                 statistics.keyword_counter[keyword] = (
@@ -76,7 +76,7 @@ def process_text_file(file, keyword_list, statistics: FileData):
 
 
 def write_output(statistics: FileData):
-    # Determine dupes (i.e. keys with value over 1 dupe counter)
+    # Gather dupes from counter
     dup_num = sum(statistics.duplicate_counter.values())
     dupes = "num dupes\t" + str(dup_num)
 
@@ -145,7 +145,7 @@ def main():
     )
     time_start = perf_counter()
 
-    # Use as many threads as possible, default: os.cpu_count()+4
+    # Multithreading using as many threads as possible, default: os.cpu_count()+4
     arg_list = ((file, keyword_list, file_stats) for file in files_to_process)
     with ThreadPoolExecutor() as threads:
         threads.map(
