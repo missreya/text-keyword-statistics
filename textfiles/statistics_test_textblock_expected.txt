@@ -1,0 +1,20 @@
+The quick brown fox (19 char, 4 tok)
+jumps (5 char, 1 tok)
+over the lazy dog. (18 char, 4 tok)
+The quick brown (15 char, 3 tok)
+fox jumps (9 char, 2 tok)
+over the lazy dog. (18 char, 4 tok)
+
+num dupes	1
+med length	16.5
+std length	5.228129047119374
+med tokens	3.5
+std length	1.1547005383792515
+fox	2
+happy	0
+he	0
+jumps	2
+she	0
+sunshine	0
+that	0
+the	2

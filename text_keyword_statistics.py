@@ -1,12 +1,14 @@
 # Import Module
-import os
-import numpy as np
-import re
-from time import perf_counter
 import argparse
-from typing import Dict, List
+import mmap
+import numpy as np
+import os
+import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
+from time import perf_counter
+from typing import Dict, List
 
 
 @dataclass
@@ -47,27 +49,30 @@ def file_iterate(path, keyword_file):
 
 # Text file processing and statistic function
 def process_text_file(file, keyword_list, statistics: FileData):
+    mm = ""
+    # Open file into memory for faster processing
+    with open(file, mode="r+b") as f:
+        mm = mmap.mmap(f.fileno(), 0)
 
-    # Open file for processing in read-only and ignores encoding errors
-    with open(file, mode="r", errors="ignore") as f:
-        for line in f:
-            line = line.rstrip().lstrip()
-            if len(line) < 1:
-                continue
+    for line in iter(mm.readline, b""):
+        line = line.decode("utf-8")
+        line = line.rstrip().lstrip()
+        if len(line) < 1:
+            continue
 
-            # Update counters; dupe counter starts at -1 so the first instance is not counted as a dupe
-            statistics.duplicate_counter[line] = (
-                statistics.duplicate_counter.get(line, -1) + 1
-            )
-            statistics.lines.append(len(line))
-            statistics.tokens.append(len(line.split(" ")))
+        # Update counters; dupe counter starts at -1 so the first instance is not counted as a dupe
+        statistics.duplicate_counter[line] = (
+            statistics.duplicate_counter.get(line, -1) + 1
+        )
+        statistics.lines.append(len(line))
+        statistics.tokens.append(len(line.split()))
 
-            # Checks for keyword in line and adds count to dictionary
-            for keyword in keyword_list:
-                if re.search(r"\b" + str(keyword) + r"\b", line):
-                    statistics.keyword_counter[keyword] = (
-                        statistics.keyword_counter.get(keyword, 0) + 1
-                    )
+        # Checks for keyword in line and adds count to dictionary
+        for keyword in keyword_list:
+            if re.search(r"\b" + str(keyword) + r"\b", line):
+                statistics.keyword_counter[keyword] = (
+                    statistics.keyword_counter.get(keyword, 0) + 1
+                )
 
 
 def write_output(statistics: FileData):
@@ -138,8 +143,16 @@ def main():
         duplicate_counter=dict(),
     )
     time_start = perf_counter()
-    for file in files_to_process:
-        process_text_file(file, keyword_list, file_stats)
+
+    # Use as many threads as possible, default: os.cpu_count()+4
+    arg_list = ((file, keyword_list, file_stats) for file in files_to_process)
+    with ThreadPoolExecutor() as threads:
+        threads.map(lambda process_file_args: process_text_file(*process_file_args), arg_list)
+
+    # Use below for singlethreading
+    # for file in files_to_process:
+    #     process_text_file(file, keyword_list, file_stats)
+
     write_output(file_stats)
     time_stop = perf_counter()
 
